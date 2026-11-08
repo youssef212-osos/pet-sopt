@@ -6,13 +6,13 @@
     <title>Pet Spot Clinic</title>
     <style>
         :root {
-            --bg-color: #050b14;
-            --card-bg: #0a1728;
+            --bg-color: #030712;
+            --glass-bg: rgba(10, 23, 40, 0.65);
+            --glass-border: rgba(0, 123, 255, 0.25);
             --accent-color: #007bff;
             --accent-hover: #0056b3;
             --text-color: #ffffff;
-            --text-muted: #a0aec0;
-            --border-color: #1e3a8a;
+            --text-muted: #94a3b8;
         }
 
         * {
@@ -23,26 +23,43 @@
         }
 
         body {
-            background-color: var(--bg-color);
+            background: linear-gradient(135deg, #020617, #0f172a, #020617);
             color: var(--text-color);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphism Effect */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
         }
 
         header {
-            background-color: var(--card-bg);
-            border-bottom: 2px solid var(--border-color);
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--glass-border);
             padding: 15px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .logo {
             font-size: 1.5rem;
             font-weight: bold;
-            color: var(--accent-color);
+            color: #38bdf8;
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
         }
 
         nav a {
@@ -54,7 +71,7 @@
         }
 
         nav a:hover {
-            color: var(--accent-color);
+            color: #38bdf8;
         }
 
         .container {
@@ -65,18 +82,9 @@
             width: 100%;
         }
 
-        .card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-            margin-bottom: 30px;
-        }
-
         h2, h3 {
             margin-bottom: 20px;
-            color: var(--accent-color);
+            color: #38bdf8;
         }
 
         .form-group {
@@ -87,67 +95,110 @@
             display: block;
             margin-bottom: 8px;
             color: var(--text-muted);
+            font-size: 0.95rem;
         }
 
         input, select, textarea {
             width: 100%;
-            padding: 12px;
-            background-color: #030712;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
+            padding: 12px 16px;
+            background: rgba(3, 7, 18, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
             color: var(--text-color);
             font-size: 1rem;
+            transition: all 0.3s;
         }
 
         input:focus, select:focus, textarea:focus {
             outline: none;
-            border-color: var(--accent-color);
+            border-color: #38bdf8;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
         }
 
         .btn {
-            background-color: var(--accent-color);
+            background: linear-gradient(135deg, #007bff, #0056b3);
             color: white;
             border: none;
             padding: 12px 24px;
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
             font-size: 1rem;
             font-weight: bold;
-            transition: background-color 0.3s, transform 0.2s;
+            transition: all 0.3s;
             display: inline-block;
             text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4);
         }
 
         .btn:hover {
-            background-color: var(--accent-hover);
             transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 123, 255, 0.6);
         }
 
         .btn-whatsapp {
-            background-color: #25d366;
+            background: linear-gradient(135deg, #25d366, #128c7e);
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
         }
 
         .btn-whatsapp:hover {
-            background-color: #128c7e;
+            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6);
         }
 
         .hidden {
             display: none !important;
         }
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-        }
-
         .admin-bar {
-            background: #1e3a8a;
+            background: rgba(30, 58, 138, 0.85);
+            backdrop-filter: blur(10px);
             padding: 10px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-size: 0.9rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        /* Interactive ID Badge / Lanyard (شريطة الموظفين المرنة كالأستك) */
+        .lanyard-container {
+            position: fixed;
+            top: 70px;
+            right: 40px;
+            z-index: 1000;
+            cursor: grab;
+            touch-action: none;
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .lanyard-strap {
+            width: 4px;
+            height: 60px;
+            background: linear-gradient(to bottom, #38bdf8, #007bff);
+            margin: 0 auto;
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+        }
+
+        .id-badge {
+            width: 200px;
+            background: rgba(10, 23, 40, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid #38bdf8;
+            border-radius: 14px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+            user-select: none;
+        }
+
+        .id-badge h4 {
+            color: #38bdf8;
+            font-size: 0.95rem;
+            margin-bottom: 5px;
+        }
+
+        .id-badge p {
+            color: var(--text-muted);
+            font-size: 0.8rem;
         }
 
         @media (max-width: 768px) {
@@ -159,14 +210,26 @@
             nav a {
                 margin: 0 10px;
             }
+            .lanyard-container {
+                display: none; /* إخفائها على الموبايل لتجنب تغطية الشاشة الصغيرة */
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- Admin Top Bar (Visible only when admin logs in and switches back) -->
+    <!-- شريطة الموظفين التفاعلية (ID Badge) -->
+    <div id="draggableBadge" class="lanyard-container" onmousedown="startDrag(event)" ontouchstart="startDrag(event)">
+        <div class="lanyard-strap"></div>
+        <div class="id-badge">
+            <h4 id="badgeName">Pet Spot Staff</h4>
+            <p id="badgeRole">بطاقة تعريفية</p>
+        </div>
+    </div>
+
+    <!-- Admin Top Bar -->
     <div id="adminTopBar" class="admin-bar hidden">
-        <span>أنت مسجل حالياً كأدمن (لوحة التحكم)</span>
+        <span>أنت مسجل حالياً كأدمن</span>
         <div>
             <button class="btn" style="padding: 5px 10px; font-size: 0.85rem;" onclick="showAdminDashboard()">لوحة الأدمن</button>
             <button class="btn" style="padding: 5px 10px; font-size: 0.85rem; background: #dc3545;" onclick="logout()">تسجيل الخروج</button>
@@ -178,46 +241,44 @@
         <div class="logo">Pet Spot Clinic</div>
         <nav id="mainNav" class="hidden">
             <a href="#" onclick="showSection('home')">الرئيسية</a>
-            <a href="#" onclick="showSection('booking')</a>حجز موعد</a>
-            <a href="#" onclick="showSection('orders')">طلب منتجات وأوردرات</a>
+            <a href="#" onclick="showSection('booking')">حجز موعد</a>
+            <a href="#" onclick="showSection('orders')">طلب منتجات</a>
             <a href="#" onclick="logout()">تسجيل الخروج</a>
         </nav>
     </header>
 
     <div class="container">
 
-        <!-- Auth Section (Login / Signup unified) -->
-        <div id="authSection" class="card" style="max-width: 500px; margin: 50px auto;">
-            <h2 id="authTitle">تسجيل الدخول / إنشاء حساب</h2>
+        <!-- Auth Section -->
+        <div id="authSection" class="glass-card" style="max-width: 500px; margin: 30px auto;">
+            <h2>تسجيل الدخول / إنشاء حساب</h2>
             <div id="authForm">
-                <div class="form-group" id="ownerNameGroup">
+                <div class="form-group">
                     <label>اسم صاحب الحيوان</label>
                     <input type="text" id="regOwnerName" placeholder="أدخل اسمك الكامل">
                 </div>
-                <div class="form-group" id="petNameGroup">
+                <div class="form-group">
                     <label>اسم الحيوان الأليف</label>
                     <input type="text" id="regPetName" placeholder="اسم الكلب أو القطة">
                 </div>
-                <div class="form-group" id="petAgeGroup">
-                    <label>عمر الحيوان (بالسنوات/الشهور)</label>
+                <div class="form-group">
+                    <label>عمر الحيوان</label>
                     <input type="text" id="regPetAge" placeholder="مثال: سنتين">
                 </div>
-                <div class="form-group" id="petTypeGroup">
-                    <label>نوع الحيوان</label>
+                <div class="form-group">
+                    <label>نوع الحيوان (كلب أو قطة فقط)</label>
                     <select id="regPetType">
                         <option value="كلب">كلب</option>
                         <option value="قطة">قطة</option>
-                        <option value="طائر">طائر</option>
-                        <option value="أخرى">أخرى</option>
                     </select>
                 </div>
-                <div class="form-group" id="addressGroup">
+                <div class="form-group">
                     <label>العنوان</label>
                     <input type="text" id="regAddress" placeholder="العنوان بالتفصيل">
                 </div>
                 <div class="form-group">
                     <label>اسم المستخدم (Username)</label>
-                    <input type="text" id="loginUsername" placeholder="اسم المستخدم أو أدمن">
+                    <input type="text" id="loginUsername" placeholder="اسم المستخدم أو admin">
                 </div>
                 <div class="form-group">
                     <label>كلمة المرور (Password)</label>
@@ -229,16 +290,17 @@
 
         <!-- Home Section -->
         <div id="homeSection" class="hidden">
-            <div class="card">
+            <div class="glass-card">
                 <h2>أهلاً بك في عيادة Pet Spot</h2>
-                <p style="color: var(--text-muted); line-height: 1.6;">نحن هنا لتقديم أفضل رعاية طبية وترفيهية لحيوانك الأليف. يمكنك حجز موعد كشف أو طلب مستلزمات وأغذية لحيوانك وسنتواصل معك فوراً عبر الواتساب.</p>
+                <p style="color: var(--text-muted); line-height: 1.6;">نحن هنا لتقديم أفضل رعاية طبية لحيوانك الأليف. بياناتك مسجلة بالكامل، ويمكنك الحجز أو طلب المستلزمات بكل سهولة وسرعة عبر الواتساب.</p>
             </div>
         </div>
 
         <!-- Booking Section -->
         <div id="bookingSection" class="hidden">
-            <div class="card" style="max-width: 600px; margin: 0 auto;">
-                <h2>حجز موعد جديد</h2>
+            <div class="glass-card" style="max-width: 600px; margin: 0 auto;">
+                <h2>حجز موعد كشف جديد</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 15px;">(بيانات حيوانك مسجلة مسبقاً ولن تحتاج لإدخالها مجدداً)</p>
                 <div class="form-group">
                     <label>اختر الخدمة الطبية</label>
                     <select id="bookService">
@@ -254,7 +316,7 @@
                 </div>
                 <div class="form-group">
                     <label>ملاحظات إضافية</label>
-                    <textarea id="bookNotes" rows="3" placeholder="اكتب أي أعراض أو ملاحظات..."></textarea>
+                    <textarea id="bookNotes" rows="3" placeholder="اكتب أي أعراض..."></textarea>
                 </div>
                 <button class="btn btn-whatsapp" style="width: 100%;" onclick="sendBookingWhatsApp()">تأكيد وإرسال الحجز عبر واتساب</button>
             </div>
@@ -262,7 +324,7 @@
 
         <!-- Orders Section -->
         <div id="ordersSection" class="hidden">
-            <div class="card" style="max-width: 600px; margin: 0 auto;">
+            <div class="glass-card" style="max-width: 600px; margin: 0 auto;">
                 <h2>طلب منتجات وأوردرات</h2>
                 <div class="form-group">
                     <label>اكتب المنتجات المطلوبة (أغذية، ألعاب، أدوات عناية...)</label>
@@ -274,9 +336,9 @@
 
         <!-- Admin Dashboard Section -->
         <div id="adminSection" class="hidden">
-            <div class="card">
+            <div class="glass-card">
                 <h2>لوحة تحكم الأدمن</h2>
-                <p style="color: var(--text-muted); margin-bottom: 20px;">مرحباً بك يا أدمن. يمكنك هنا متابعة النظام والدخول لواجهة المستخدم العادي في أي وقت.</p>
+                <p style="color: var(--text-muted); margin-bottom: 20px;">مرحباً بك يا أدمن في لوحة التحكم الخاصة بك.</p>
                 <button class="btn" onclick="switchToUserView()">الذهاب لواجهة المستخدم العادي</button>
             </div>
         </div>
@@ -284,11 +346,47 @@
     </div>
 
     <script>
-        // ضع رقم واتساب العيادة هنا (بدون علامة +، مع كود الدولة)
-        const CLINIC_WHATSAPP = "201000000000"; 
-
+        const CLINIC_WHATSAPP = "201000000000"; // ضع رقم واتساب العيادة هنا
         let currentUser = null;
         let isAdmin = false;
+
+        // ميزة الشريطة (ID Badge) وحركة الأستك المرنة
+        const badge = document.getElementById('draggableBadge');
+        let isDragging = false;
+        let startX, startY, currentX = 0, currentY = 0;
+
+        function startDrag(e) {
+            isDragging = true;
+            const clientX = e.clientX || e.touches[0].clientX;
+            const clientY = e.clientY || e.touches[0].clientY;
+            startX = clientX - currentX;
+            startY = clientY - currentY;
+            badge.style.transition = 'none';
+        }
+
+        window.addEventListener('mousemove', drag);
+        window.addEventListener('touchmove', drag);
+        window.addEventListener('mouseup', stopDrag);
+        window.addEventListener('touchend', stopDrag);
+
+        function drag(e) {
+            if (!isDragging) return;
+            const clientX = e.clientX || e.touches[0].clientX;
+            const clientY = e.clientY || e.touches[0].clientY;
+            currentX = clientX - startX;
+            currentY = clientY - startY;
+            badge.style.transform = `translate(${currentX}px, ${currentY}px)`;
+        }
+
+        function stopDrag() {
+            if (!isDragging) return;
+            isDragging = false;
+            // تأثير الأستك (الرجوع لمكانها الأصلي بمرونة)
+            currentX = 0;
+            currentY = 0;
+            badge.style.transition = 'transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+            badge.style.transform = `translate(0px, 0px)`;
+        }
 
         function handleAuth() {
             const username = document.getElementById('loginUsername').value.trim();
@@ -299,19 +397,19 @@
                 return;
             }
 
-            // التحقق من الأدمن
             if(username === 'admin' && password === 'admin123') {
                 isAdmin = true;
                 currentUser = { username: 'admin', ownerName: 'الأدمن' };
                 document.getElementById('authSection').classList.add('hidden');
                 document.getElementById('adminTopBar').classList.remove('hidden');
+                document.getElementById('badgeName').innerText = 'Admin Dashboard';
+                document.getElementById('badgeRole').innerText = 'مدير النظام';
                 showAdminDashboard();
                 return;
             }
 
-            // تسجيل مستخدم عادي
             const ownerName = document.getElementById('regOwnerName').value || 'عميل';
-            const petName = document.getElementById('regPetName').value || 'حيوان أليف';
+            const petName = document.getElementById('regPetName').value || 'أليف';
             const petAge = document.getElementById('regPetAge').value || '-';
             const petType = document.getElementById('regPetType').value;
             const address = document.getElementById('regAddress').value || '-';
@@ -321,6 +419,8 @@
 
             document.getElementById('authSection').classList.add('hidden');
             document.getElementById('mainNav').classList.remove('hidden');
+            document.getElementById('badgeName').innerText = petName + ' (' + petType + ')';
+            document.getElementById('badgeRole').innerText = 'صاحبه: ' + ownerName;
             showSection('home');
         }
 
@@ -329,7 +429,6 @@
             document.getElementById('bookingSection').classList.add('hidden');
             document.getElementById('ordersSection').classList.add('hidden');
             document.getElementById('adminSection').classList.add('hidden');
-
             document.getElementById(sectionId + 'Section').classList.remove('hidden');
         }
 
@@ -355,6 +454,8 @@
             document.getElementById('authSection').classList.remove('hidden');
             document.getElementById('loginUsername').value = '';
             document.getElementById('loginPassword').value = '';
+            document.getElementById('badgeName').innerText = 'Pet Spot Staff';
+            document.getElementById('badgeRole').innerText = 'بطاقة تعريفية';
         }
 
         function sendBookingWhatsApp() {
@@ -367,15 +468,10 @@
                 return;
             }
 
-            const owner = currentUser.ownerName || 'غير مسجل';
-            const pet = currentUser.petName || 'غير مسجل';
-            const type = currentUser.petType || 'غير مسجل';
-            const address = currentUser.address || 'غير مسجل';
-
-            const message = `*طلب حجز موعد جديد - Pet Spot*\n\n` +
-                            `👤 صاحب الحيوان: ${owner}\n` +
-                            `🐾 اسم الحيوان: ${pet} (${type})\n` +
-                            `📍 العنوان: ${address}\n` +
+            const message = `*حجز موعد جديد - Pet Spot*\n\n` +
+                            `👤 المالك: ${currentUser.ownerName}\n` +
+                            `🐾 الحيوان: ${currentUser.petName} (${currentUser.petType}) - العمر: ${currentUser.petAge}\n` +
+                            `📍 العنوان: ${currentUser.address}\n` +
                             `🩺 الخدمة: ${service}\n` +
                             `📅 التاريخ: ${date}\n` +
                             `📝 ملاحظات: ${notes || 'لا يوجد'}`;
@@ -386,20 +482,15 @@
 
         function sendOrderWhatsApp() {
             const items = document.getElementById('orderItems').value;
-
             if(!items.trim()) {
                 alert('الرجاء كتابة المنتجات المطلوبة أولاً');
                 return;
             }
 
-            const owner = currentUser.ownerName || 'غير مسجل';
-            const pet = currentUser.petName || 'غير مسجل';
-            const address = currentUser.address || 'غير مسجل';
-
             const message = `*طلب أوردر جديد - Pet Spot*\n\n` +
-                            `👤 صاحب العميل: ${owner}\n` +
-                            `🐾 اسم الحيوان: ${pet}\n` +
-                            `📍 العنوان: ${address}\n` +
+                            `👤 المالك: ${currentUser.ownerName}\n` +
+                            `🐾 الحيوان: ${currentUser.petName} (${currentUser.petType})\n` +
+                            `📍 العنوان: ${currentUser.address}\n` +
                             `🛒 الطلبات:\n${items}`;
 
             const url = `https://api.whatsapp.com/send?phone=${CLINIC_WHATSAPP}&text=${encodeURIComponent(message)}`;
