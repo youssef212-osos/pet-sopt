@@ -1,501 +1,469 @@
+```html
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" class="scroll-smooth">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pet Spot Clinic</title>
-    <style>
-        :root {
-            --bg-color: #030712;
-            --glass-bg: rgba(10, 23, 40, 0.65);
-            --glass-border: rgba(0, 123, 255, 0.25);
-            --accent-color: #007bff;
-            --accent-hover: #0056b3;
-            --text-color: #ffffff;
-            --text-muted: #94a3b8;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pet Spot Clinic — عيادة بيطرية ومتجر مستلزمات</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Cairo', 'sans-serif'],
+          },
+          colors: {
+            darkbg: '#030712',
+            electric: '#007BFF',
+            cyanaccent: '#38BDF8',
+          }
         }
+      }
+    }
+  </script>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+    body {
+      background-color: #030712;
+      color: #f8fafc;
+      font-family: 'Cairo', sans-serif;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
 
-        body {
-            background: linear-gradient(135deg, #020617, #0f172a, #020617);
-            color: var(--text-color);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
-        }
+    /* كروت جلاسي (iOS Glassmorphism) */
+    .ios-glass {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.58), rgba(3, 7, 18, 0.72));
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    }
 
-        /* Glassmorphism Effect */
-        .glass-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
-        }
+    .ios-glass-input {
+      background: rgba(3, 7, 18, 0.55);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      transition: all 0.25s ease;
+    }
 
-        header {
-            background: var(--glass-bg);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--glass-border);
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
+    .ios-glass-input:focus {
+      outline: none;
+      border-color: #38BDF8;
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+      background: rgba(3, 7, 18, 0.8);
+    }
 
-        .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #38bdf8;
-            text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
-        }
+    /* شريطة الموظفين / بطاقة الهوية المرنة (Lanyard ID Badge) */
+    #lanyard-wrapper {
+      position: fixed;
+      top: 0;
+      left: 16px;
+      z-index: 60;
+      touch-action: none;
+      user-select: none;
+      cursor: grab;
+      will-change: transform;
+    }
 
-        nav a {
-            color: var(--text-color);
-            text-decoration: none;
-            margin-left: 20px;
-            font-size: 1rem;
-            transition: color 0.3s;
-        }
+    #lanyard-wrapper:active {
+      cursor: grabbing;
+    }
 
-        nav a:hover {
-            color: #38bdf8;
-        }
+    .lanyard-spring {
+      transition: transform 0.65s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 30px 20px;
-            flex: 1;
-            width: 100%;
-        }
+    .lanyard-strap {
+      width: 6px;
+      height: 52px;
+      margin: 0 auto;
+      background: linear-gradient(to bottom, #007BFF, #38BDF8);
+      border-radius: 0 0 4px 4px;
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.65);
+      position: relative;
+    }
 
-        h2, h3 {
-            margin-bottom: 20px;
-            color: #38bdf8;
-        }
+    .lanyard-clip {
+      width: 22px;
+      height: 10px;
+      margin: -2px auto 0;
+      background: linear-gradient(90deg, #94a3b8, #e2e8f0, #94a3b8);
+      border-radius: 4px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+    }
 
-        .form-group {
-            margin-bottom: 20px;
-        }
+    .lanyard-card {
+      width: 155px;
+      padding: 10px 12px;
+      border-radius: 16px;
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.72), rgba(0, 123, 255, 0.18));
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(56, 189, 248, 0.45);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      text-align: center;
+    }
 
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--text-muted);
-            font-size: 0.95rem;
-        }
-
-        input, select, textarea {
-            width: 100%;
-            padding: 12px 16px;
-            background: rgba(3, 7, 18, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            color: var(--text-color);
-            font-size: 1rem;
-            transition: all 0.3s;
-        }
-
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: #38bdf8;
-            box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
-        }
-
-        .btn {
-            background: linear-gradient(135deg, #007bff, #0056b3);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: bold;
-            transition: all 0.3s;
-            display: inline-block;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4);
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 123, 255, 0.6);
-        }
-
-        .btn-whatsapp {
-            background: linear-gradient(135deg, #25d366, #128c7e);
-            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
-        }
-
-        .btn-whatsapp:hover {
-            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6);
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        .admin-bar {
-            background: rgba(30, 58, 138, 0.85);
-            backdrop-filter: blur(10px);
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.9rem;
-            border-bottom: 1px solid var(--glass-border);
-        }
-
-        /* Interactive ID Badge / Lanyard (شريطة الموظفين المرنة كالأستك) */
-        .lanyard-container {
-            position: fixed;
-            top: 70px;
-            right: 40px;
-            z-index: 1000;
-            cursor: grab;
-            touch-action: none;
-            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .lanyard-strap {
-            width: 4px;
-            height: 60px;
-            background: linear-gradient(to bottom, #38bdf8, #007bff);
-            margin: 0 auto;
-            box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
-        }
-
-        .id-badge {
-            width: 200px;
-            background: rgba(10, 23, 40, 0.85);
-            backdrop-filter: blur(12px);
-            border: 1px solid #38bdf8;
-            border-radius: 14px;
-            padding: 15px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
-            user-select: none;
-        }
-
-        .id-badge h4 {
-            color: #38bdf8;
-            font-size: 0.95rem;
-            margin-bottom: 5px;
-        }
-
-        .id-badge p {
-            color: var(--text-muted);
-            font-size: 0.8rem;
-        }
-
-        @media (max-width: 768px) {
-            header {
-                flex-direction: column;
-                gap: 10px;
-                text-align: center;
-            }
-            nav a {
-                margin: 0 10px;
-            }
-            .lanyard-container {
-                display: none; /* إخفائها على الموبايل لتجنب تغطية الشاشة الصغيرة */
-            }
-        }
-    </style>
+    @media (min-width: 640px) {
+      #lanyard-wrapper {
+        left: 28px;
+      }
+      .lanyard-strap {
+        height: 68px;
+      }
+      .lanyard-card {
+        width: 185px;
+        padding: 12px 14px;
+      }
+    }
+  </style>
 </head>
-<body>
+<body class="flex flex-col antialiased selection:bg-[#007BFF] selection:text-white relative">
 
-    <!-- شريطة الموظفين التفاعلية (ID Badge) -->
-    <div id="draggableBadge" class="lanyard-container" onmousedown="startDrag(event)" ontouchstart="startDrag(event)">
-        <div class="lanyard-strap"></div>
-        <div class="id-badge">
-            <h4 id="badgeName">Pet Spot Staff</h4>
-            <p id="badgeRole">بطاقة تعريفية</p>
-        </div>
+  <!-- كرات إضاءة خلفية لإبراز تأثير الـ Glassmorphism -->
+  <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+    <div class="absolute -top-28 -right-24 w-80 h-80 sm:w-[420px] sm:h-[420px] bg-[#007BFF]/30 rounded-full blur-[110px]"></div>
+    <div class="absolute top-1/3 -left-28 w-72 h-72 sm:w-96 sm:h-96 bg-[#38BDF8]/25 rounded-full blur-[110px]"></div>
+    <div class="absolute -bottom-32 right-1/4 w-80 h-80 sm:w-[400px] sm:h-[400px] bg-blue-700/25 rounded-full blur-[120px]"></div>
+  </div>
+
+  <!-- إشعارات التطبيق (بديل alert) -->
+  <div id="toast-container" class="fixed top-4 right-4 left-4 sm:left-auto sm:w-96 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- =========================================================
+       شريطة الموظفين / بطاقة الهوية المرنة (تظهر بعد تسجيل الدخول)
+       ========================================================= -->
+  <div id="lanyard-wrapper" class="hidden lanyard-spring" title="اسحب البطاقة يميناً ويساراً أو للأسفل">
+    <div class="lanyard-strap"></div>
+    <div class="lanyard-clip"></div>
+    <div class="lanyard-card">
+      <div class="w-8 h-8 mx-auto mb-1.5 rounded-full bg-gradient-to-br from-[#007BFF] to-[#38BDF8] flex items-center justify-center shadow-md shadow-[#007BFF]/40">
+        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+        </svg>
+      </div>
+      <p id="badge-title" class="text-xs sm:text-sm font-extrabold text-white truncate">Pet Spot</p>
+      <p id="badge-subtitle" class="text-[11px] sm:text-xs text-[#38BDF8] font-semibold truncate mt-0.5">بطاقة العضو</p>
     </div>
+  </div>
 
-    <!-- Admin Top Bar -->
-    <div id="adminTopBar" class="admin-bar hidden">
-        <span>أنت مسجل حالياً كأدمن</span>
-        <div>
-            <button class="btn" style="padding: 5px 10px; font-size: 0.85rem;" onclick="showAdminDashboard()">لوحة الأدمن</button>
-            <button class="btn" style="padding: 5px 10px; font-size: 0.85rem; background: #dc3545;" onclick="logout()">تسجيل الخروج</button>
+  <!-- =========================================================
+       1. بوابة تسجيل الدخول وإنشاء الحساب (إلزامية عند فتح الموقع)
+       ========================================================= -->
+  <section id="auth-gate" class="min-h-screen w-full flex items-center justify-center p-4 sm:p-6 relative z-10">
+    <div class="w-full max-w-md ios-glass rounded-3xl p-6 sm:p-8 my-auto">
+      <!-- الشعار -->
+      <div class="flex flex-col items-center text-center mb-6">
+        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#007BFF] to-[#38BDF8] flex items-center justify-center mb-3 shadow-lg shadow-[#007BFF]/40">
+          <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+          </svg>
         </div>
-    </div>
+        <h1 class="text-2xl font-extrabold text-white">Pet Spot <span class="text-[#38BDF8]">Clinic</span></h1>
+        <p class="text-xs sm:text-sm text-slate-300 mt-1">سجّل دخولك أو أنشئ حساباً جديداً لأليفك</p>
+      </div>
 
-    <!-- Header -->
-    <header>
-        <div class="logo">Pet Spot Clinic</div>
-        <nav id="mainNav" class="hidden">
-            <a href="#" onclick="showSection('home')">الرئيسية</a>
-            <a href="#" onclick="showSection('booking')">حجز موعد</a>
-            <a href="#" onclick="showSection('orders')">طلب منتجات</a>
-            <a href="#" onclick="logout()">تسجيل الخروج</a>
-        </nav>
+      <!-- تبويبان منفصلان وقابلان للنقر -->
+      <div class="grid grid-cols-2 gap-2 p-1.5 bg-black/40 rounded-2xl border border-white/10 mb-6">
+        <button type="button" id="tab-login" onclick="switchAuthTab('login')"
+          class="w-full py-2.5 rounded-xl text-sm font-bold bg-gradient-to-r from-[#007BFF] to-[#38BDF8] text-white shadow-md shadow-[#007BFF]/30 transition-all">
+          تسجيل الدخول
+        </button>
+        <button type="button" id="tab-signup" onclick="switchAuthTab('signup')"
+          class="w-full py-2.5 rounded-xl text-sm font-bold text-slate-300 hover:text-white transition-all">
+          حساب جديد
+        </button>
+      </div>
+
+      <!-- نموذج تسجيل الدخول (يطلب اسم المستخدم وكلمة المرور فقط) -->
+      <form id="form-login" onsubmit="handleLogin(event)" class="flex flex-col gap-4">
+        <div class="w-full">
+          <label for="login-username" class="block text-xs font-semibold text-slate-200 mb-1.5">اسم المستخدم</label>
+          <input type="text" id="login-username" required placeholder="أدخل اسم المستخدم"
+            class="w-full px-4 py-3 rounded-xl ios-glass-input text-white placeholder-slate-400 text-sm" />
+        </div>
+
+        <div class="w-full">
+          <label for="login-password" class="block text-xs font-semibold text-slate-200 mb-1.5">كلمة المرور</label>
+          <input type="password" id="login-password" required placeholder="••••••••"
+            class="w-full px-4 py-3 rounded-xl ios-glass-input text-white placeholder-slate-400 text-sm" />
+        </div>
+
+        <button type="submit"
+          class="w-full py-3.5 mt-2 rounded-xl bg-gradient-to-r from-[#007BFF] to-[#38BDF8] hover:opacity-95 text-white font-bold text-sm transition-all shadow-lg shadow-[#007BFF]/35">
+          دخول
+        </button>
+      </form>
+
+      <!-- نموذج إنشاء حساب جديد (بيانات المالك والحيوان الأليف) -->
+      <form id="form-signup" onsubmit="handleSignup(event)" class="hidden flex-col gap-3.5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div class="w-full">
+            <label for="signup-owner-name" class="block text-xs font-semibold text-slate-200 mb-1">اسم صاحب الحيوان</label>
+            <input type="text" id="signup-owner-name" required placeholder="مثال: يوسف أحمد"
+              class="w-full px-3.5 py-2.5 rounded-xl ios-glass-input text-white placeholder-slate-400 text-sm" />
+          </div>
+          <div class="w-full">
+            <label for="signup-pet-name" class="block text-xs font-semibold text-slate-200 mb-1">اسم الحيوان الأليف</label>
+            <input type="text" id="signup-pet-name" required placeholder="مثال: ماكس"
+              class="w-full px-3.5 py-2.5 rounded-xl ios-glass-input text-white placeholder-slate-400 text-sm" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div class="w-full">
+            <label for="signup-pet-age" class="block text-xs font-semibold text-slate-200 mb-1">عمر الحيوان</label>
+            <input type="text" id="signup-pet-age" required placeholder="مثال: سنتين"
+              class="w-full px-3.5 py-2.5 rounded-xl ios-glass-input text-white placeholder-slate-400 text-sm" />
+          </div>
+          <div class="w-full">
+            <label for="signup-pet-type" class="block text-xs font-semibold text-slate-200 mb-1">نوع الحيوان</label>
+            <select id="signup-pet-type" required
+              class="w-full px-3.5 py-2.5 rounded-xl ios-glass-input text-white text-sm">
+              <option value="كلب" class="bg-slate-900">كلب</option>
+              <option value="قطة" class="bg-slate-900">قطة</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="w-full">
+          <label for="signup-address" class="block text-xs font-semibold text-slate-200 mb-1">العنوان</label>
+          <input type="text" id="signup-address" required placeholder="العنوان بالتفصيل"
+            class="w-full px-3.5 py-2.5 rounded-xl ios-glass-input text-white placeholder-slate-400 text-sm" />
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div class="w-full">
+            <label for="signup-username" class="block text-xs font-semibold text-slate-200 mb-1">اسم المستخدم</label>
+            <input type="text" id="signup-username" required placeholder="username"
+              class="w-full px-3.5 py-2.5 rounded-xl ios-glass-input text-white placeholder-slate-400 text-sm" />
+          </div>
+          <div class="w-full">
+            <label for="signup-password" class="block text-xs font-semibold text-slate-200 mb-1">كلمة المرور</label>
+            <input type="password" id="signup-password" required minlength="4" placeholder="••••••••"
+              class="w-full px-3.5 py-2.5 rounded-xl ios-glass-input text-white placeholder-slate-400 text-sm" />
+          </div>
+        </div>
+
+        <button type="submit"
+          class="w-full py-3.5 mt-2 rounded-xl bg-gradient-to-r from-[#007BFF] to-[#38BDF8] hover:opacity-95 text-white font-bold text-sm transition-all shadow-lg shadow-[#007BFF]/35">
+          إنشاء الحساب والدخول
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       2. الموقع الرئيسي (للمستخدمين المسجلين)
+       ========================================================= -->
+  <div id="main-app" class="hidden flex-col min-h-screen w-full relative z-10">
+    <!-- الهيدر الزجاجي -->
+    <header class="sticky top-0 z-40 ios-glass border-x-0 border-t-0 rounded-none">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <a href="#home" class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-[#007BFF] to-[#38BDF8] flex items-center justify-center shrink-0 shadow-md shadow-[#007BFF]/30">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+              </svg>
+            </div>
+            <span class="text-base sm:text-lg font-extrabold text-white">Pet Spot <span class="text-[#38BDF8]">Clinic</span></span>
+          </a>
+
+          <nav class="hidden md:flex items-center gap-6 text-sm font-semibold text-slate-200">
+            <a href="#home" class="hover:text-[#38BDF8] transition-colors">الرئيسية</a>
+            <a href="#book" class="hover:text-[#38BDF8] transition-colors">حجز موعد</a>
+            <a href="#order-whatsapp" class="hover:text-[#38BDF8] transition-colors">طلب أوردر</a>
+          </nav>
+
+          <div class="hidden md:flex items-center gap-3">
+            <button type="button" id="btn-switch-to-admin" onclick="enterAdminDashboard()"
+              class="hidden px-3.5 py-2 rounded-xl bg-[#007BFF]/25 hover:bg-[#007BFF]/40 text-[#38BDF8] text-xs font-bold border border-[#38BDF8]/40 transition-all">
+              لوحة الأدمن
+            </button>
+            <button type="button" onclick="logout()"
+              class="px-4 py-2 rounded-xl bg-white/10 hover:bg-red-500/25 hover:text-red-300 text-slate-200 text-xs font-bold border border-white/15 transition-all">
+              تسجيل الخروج
+            </button>
+          </div>
+
+          <button type="button" onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-xl text-slate-200 hover:bg-white/10" aria-label="القائمة">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- قائمة الموبايل -->
+      <div id="mobile-menu" class="hidden md:hidden bg-[#030712]/90 backdrop-blur-xl border-t border-white/10 px-4 py-4 space-y-3">
+        <a href="#home" onclick="toggleMobileMenu()" class="block text-sm text-slate-200 hover:text-[#38BDF8] py-1">الرئيسية</a>
+        <a href="#book" onclick="toggleMobileMenu()" class="block text-sm text-slate-200 hover:text-[#38BDF8] py-1">حجز موعد</a>
+        <a href="#order-whatsapp" onclick="toggleMobileMenu()" class="block text-sm text-slate-200 hover:text-[#38BDF8] py-1">طلب أوردر</a>
+        <button type="button" id="mobile-btn-switch-to-admin" onclick="toggleMobileMenu(); enterAdminDashboard()"
+          class="hidden w-full text-right text-sm text-[#38BDF8] font-bold py-2 border-t border-white/10">
+          لوحة الأدمن
+        </button>
+        <button type="button" onclick="logout()" class="w-full text-right text-sm text-red-400 font-bold py-2 border-t border-white/10">
+          تسجيل الخروج
+        </button>
+      </div>
     </header>
 
-    <div class="container">
+    <!-- القسم الرئيسي -->
+    <section id="home" class="py-14 sm:py-20 px-4">
+      <div class="max-w-4xl mx-auto text-center">
+        <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full ios-glass text-[#38BDF8] text-xs font-bold mb-5">
+          <span class="w-2 h-2 rounded-full bg-[#38BDF8] animate-pulse"></span>
+          رعاية بيطرية متكاملة لأليفك
+        </span>
+        <h1 class="text-3xl sm:text-5xl font-extrabold text-white leading-tight">
+          أهلاً بك في <span class="bg-gradient-to-r from-[#007BFF] to-[#38BDF8] bg-clip-text text-transparent">Pet Spot Clinic</span>
+        </h1>
+        <p id="saved-pet-banner" class="mt-4 text-sm sm:text-base text-slate-300 max-w-xl mx-auto"></p>
 
-        <!-- Auth Section -->
-        <div id="authSection" class="glass-card" style="max-width: 500px; margin: 30px auto;">
-            <h2>تسجيل الدخول / إنشاء حساب</h2>
-            <div id="authForm">
-                <div class="form-group">
-                    <label>اسم صاحب الحيوان</label>
-                    <input type="text" id="regOwnerName" placeholder="أدخل اسمك الكامل">
-                </div>
-                <div class="form-group">
-                    <label>اسم الحيوان الأليف</label>
-                    <input type="text" id="regPetName" placeholder="اسم الكلب أو القطة">
-                </div>
-                <div class="form-group">
-                    <label>عمر الحيوان</label>
-                    <input type="text" id="regPetAge" placeholder="مثال: سنتين">
-                </div>
-                <div class="form-group">
-                    <label>نوع الحيوان (كلب أو قطة فقط)</label>
-                    <select id="regPetType">
-                        <option value="كلب">كلب</option>
-                        <option value="قطة">قطة</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>العنوان</label>
-                    <input type="text" id="regAddress" placeholder="العنوان بالتفصيل">
-                </div>
-                <div class="form-group">
-                    <label>اسم المستخدم (Username)</label>
-                    <input type="text" id="loginUsername" placeholder="اسم المستخدم أو admin">
-                </div>
-                <div class="form-group">
-                    <label>كلمة المرور (Password)</label>
-                    <input type="password" id="loginPassword" placeholder="كلمة المرور">
-                </div>
-                <button class="btn" style="width: 100%;" onclick="handleAuth()">دخول / تسجيل</button>
-            </div>
+        <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+          <a href="#book" class="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-gradient-to-r from-[#007BFF] to-[#38BDF8] hover:opacity-95 text-white font-bold text-sm shadow-lg shadow-[#007BFF]/35 transition-all">
+            احجز موعد كشف
+          </a>
+          <a href="#order-whatsapp" class="w-full sm:w-auto px-7 py-3.5 rounded-2xl ios-glass hover:bg-white/10 text-white font-bold text-sm transition-all">
+            اطلب منتجات وأوردرات
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- قسم حجز موعد (يستخدم البيانات المحفوظة تلقائياً) -->
+    <section id="book" class="py-10 px-4">
+      <div class="max-w-2xl mx-auto ios-glass rounded-3xl p-6 sm:p-8">
+        <div class="text-center mb-6">
+          <h2 class="text-2xl font-extrabold text-white">حجز موعد كشف</h2>
+          <p class="text-xs sm:text-sm text-[#38BDF8] mt-1">بيانات أليفك مسجلة تلقائياً — اختر الخدمة والموعد فقط</p>
         </div>
 
-        <!-- Home Section -->
-        <div id="homeSection" class="hidden">
-            <div class="glass-card">
-                <h2>أهلاً بك في عيادة Pet Spot</h2>
-                <p style="color: var(--text-muted); line-height: 1.6;">نحن هنا لتقديم أفضل رعاية طبية لحيوانك الأليف. بياناتك مسجلة بالكامل، ويمكنك الحجز أو طلب المستلزمات بكل سهولة وسرعة عبر الواتساب.</p>
+        <form onsubmit="sendBookingWhatsApp(event)" class="flex flex-col gap-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="w-full">
+              <label for="book-service" class="block text-xs font-semibold text-slate-200 mb-1.5">اختر الخدمة</label>
+              <select id="book-service" required class="w-full px-4 py-3 rounded-xl ios-glass-input text-white text-sm">
+                <option value="كشف عام" class="bg-slate-900">كشف عام</option>
+                <option value="تطعيمات" class="bg-slate-900">تطعيمات</option>
+                <option value="قص شعر" class="bg-slate-900">قص شعر</option>
+                <option value="فحص أسنان" class="bg-slate-900">فحص أسنان</option>
+              </select>
             </div>
+            <div class="w-full">
+              <label for="book-date" class="block text-xs font-semibold text-slate-200 mb-1.5">تاريخ الموعد</label>
+              <input type="date" id="book-date" required class="w-full px-4 py-3 rounded-xl ios-glass-input text-white text-sm" />
+            </div>
+          </div>
+
+          <div class="w-full">
+            <label for="book-notes" class="block text-xs font-semibold text-slate-200 mb-1.5">ملاحظات إضافية (اختياري)</label>
+            <textarea id="book-notes" rows="2" placeholder="أي أعراض أو تفاصيل تود إضافتها..."
+              class="w-full px-4 py-3 rounded-xl ios-glass-input text-white placeholder-slate-400 text-sm"></textarea>
+          </div>
+
+          <button type="submit"
+            class="w-full py-3.5 mt-1 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:opacity-95 text-white font-bold text-sm transition-all shadow-lg shadow-emerald-500/30">
+            تأكيد وإرسال عبر واتساب
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- قسم طلب أوردر عبر واتساب (يستخدم البيانات المحفوظة تلقائياً) -->
+    <section id="order-whatsapp" class="py-10 px-4 mb-10">
+      <div class="max-w-2xl mx-auto ios-glass rounded-3xl p-6 sm:p-8">
+        <div class="text-center mb-6">
+          <h2 class="text-2xl font-extrabold text-white">طلب أوردر / مستلزمات</h2>
+          <p class="text-xs sm:text-sm text-slate-300 mt-1">اختر أو اكتب طلباتك وسيتم إرسالها مع بياناتك المسجلة لواتساب العيادة</p>
         </div>
 
-        <!-- Booking Section -->
-        <div id="bookingSection" class="hidden">
-            <div class="glass-card" style="max-width: 600px; margin: 0 auto;">
-                <h2>حجز موعد كشف جديد</h2>
-                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 15px;">(بيانات حيوانك مسجلة مسبقاً ولن تحتاج لإدخالها مجدداً)</p>
-                <div class="form-group">
-                    <label>اختر الخدمة الطبية</label>
-                    <select id="bookService">
-                        <option value="كشف عام">كشف عام</option>
-                        <option value="تطعيمات">تطعيمات</option>
-                        <option value="قص شعر وتظبيط">قص شعر وتظبيط</option>
-                        <option value="فحص أسنان">فحص أسنان</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>تاريخ الميعاد</label>
-                    <input type="date" id="bookDate">
-                </div>
-                <div class="form-group">
-                    <label>ملاحظات إضافية</label>
-                    <textarea id="bookNotes" rows="3" placeholder="اكتب أي أعراض..."></textarea>
-                </div>
-                <button class="btn btn-whatsapp" style="width: 100%;" onclick="sendBookingWhatsApp()">تأكيد وإرسال الحجز عبر واتساب</button>
-            </div>
+        <div class="mb-4">
+          <p class="text-xs font-semibold text-slate-300 mb-2">إضافة سريعة:</p>
+          <div class="flex flex-wrap gap-2">
+            <button type="button" onclick="addQuickItem('طعام كلاب')" class="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-[#007BFF]/30 border border-white/15 text-xs text-white transition-all">+ طعام كلاب</button>
+            <button type="button" onclick="addQuickItem('طعام قطط')" class="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-[#007BFF]/30 border border-white/15 text-xs text-white transition-all">+ طعام قطط</button>
+            <button type="button" onclick="addQuickItem('فيتامينات')" class="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-[#007BFF]/30 border border-white/15 text-xs text-white transition-all">+ فيتامينات</button>
+            <button type="button" onclick="addQuickItem('رمل قطط')" class="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-[#007BFF]/30 border border-white/15 text-xs text-white transition-all">+ رمل قطط</button>
+            <button type="button" onclick="addQuickItem('شامبو طبي')" class="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-[#007BFF]/30 border border-white/15 text-xs text-white transition-all">+ شامبو طبي</button>
+          </div>
         </div>
 
-        <!-- Orders Section -->
-        <div id="ordersSection" class="hidden">
-            <div class="glass-card" style="max-width: 600px; margin: 0 auto;">
-                <h2>طلب منتجات وأوردرات</h2>
-                <div class="form-group">
-                    <label>اكتب المنتجات المطلوبة (أغذية، ألعاب، أدوات عناية...)</label>
-                    <textarea id="orderItems" rows="5" placeholder="اكتب ما تحتاجه بالتفصيل..."></textarea>
-                </div>
-                <button class="btn btn-whatsapp" style="width: 100%;" onclick="sendOrderWhatsApp()">إرسال الأوردر عبر واتساب</button>
-            </div>
+        <form onsubmit="sendOrderWhatsApp(event)" class="flex flex-col gap-4">
+          <div class="w-full">
+            <label for="order-items" class="block text-xs font-semibold text-slate-200 mb-1.5">المنتجات المطلوبة</label>
+            <textarea id="order-items" rows="3" required placeholder="اكتب المنتجات والكميات المطلوبة..."
+              class="w-full px-4 py-3 rounded-xl ios-glass-input text-white placeholder-slate-400 text-sm"></textarea>
+          </div>
+
+          <button type="submit"
+            class="w-full py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:opacity-95 text-white font-bold text-sm transition-all shadow-lg shadow-emerald-500/30">
+            إرسال الأوردر عبر واتساب
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <footer class="mt-auto py-6 text-center text-xs text-slate-400 border-t border-white/10">
+      &copy; 2026 Pet Spot Clinic. جميع الحقوق محفوظة.
+    </footer>
+  </div>
+
+  <!-- =========================================================
+       3. لوحة تحكم الأدمن
+       ========================================================= -->
+  <section id="admin-dashboard" class="hidden min-h-screen w-full flex-col relative z-10">
+    <header class="ios-glass border-x-0 border-t-0 rounded-none px-4 sm:px-8 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <span class="px-2.5 py-1 rounded-lg bg-[#007BFF]/30 text-[#38BDF8] text-xs font-bold border border-[#38BDF8]/40">ADMIN</span>
+        <h1 class="text-lg font-extrabold text-white">لوحة تحكم Pet Spot</h1>
+      </div>
+      <div class="flex items-center gap-2">
+        <button type="button" onclick="switchToUserView()"
+          class="flex-1 sm:flex-none px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold border border-white/15 transition-all">
+          تصفح كمستخدم عادي
+        </button>
+        <button type="button" onclick="logout()"
+          class="flex-1 sm:flex-none px-4 py-2 rounded-xl bg-red-500/20 hover:bg-red-500/35 text-red-300 text-xs font-bold border border-red-500/30 transition-all">
+          تسجيل الخروج
+        </button>
+      </div>
+    </header>
+
+    <main class="max-w-5xl w-full mx-auto p-4 sm:p-8 space-y-6">
+      <div class="ios-glass rounded-3xl p-6">
+        <h2 class="text-lg font-bold text-white mb-2">مرحباً بك يا أدمن</h2>
+        <p class="text-sm text-slate-300">يمكنك متابعة المستخدمين المسجلين أو التبديل لواجهة المستخدم العادي في أي وقت.</p>
+      </div>
+
+      <div class="ios-glass rounded-3xl p-6">
+        <h2 class="text-lg font-bold text-white mb-4">المستخدمين المسجلين</h2>
+        <div id="admin-users-list" class="space-y-2.5">
+          <p class="text-sm text-slate-400">لا يوجد مستخدمين مسجلين بعد.</p>
         </div>
+      </div>
+    </main>
+  </section>
 
-        <!-- Admin Dashboard Section -->
-        <div id="adminSection" class="hidden">
-            <div class="glass-card">
-                <h2>لوحة تحكم الأدمن</h2>
-                <p style="color: var(--text-muted); margin-bottom: 20px;">مرحباً بك يا أدمن في لوحة التحكم الخاصة بك.</p>
-                <button class="btn" onclick="switchToUserView()">الذهاب لواجهة المستخدم العادي</button>
-            </div>
-        </div>
+  <!-- =========================================================
+       JAVASCRIPT LOGIC
+       ========================================================= -->
+  <script>
+    const USERS_KEY = 'petspot_users_v3';
+    const SESSION_KEY = 'petspot_session_v3';
+    const CLINIC_WHATSAPP = '201107724520'; // رقم واتساب العيادة
 
-    </div>
-
-    <script>
-        const CLINIC_WHATSAPP = "201000000000"; // ضع رقم واتساب العيادة هنا
-        let currentUser = null;
-        let isAdmin = false;
-
-        // ميزة الشريطة (ID Badge) وحركة الأستك المرنة
-        const badge = document.getElementById('draggableBadge');
-        let isDragging = false;
-        let startX, startY, currentX = 0, currentY = 0;
-
-        function startDrag(e) {
-            isDragging = true;
-            const clientX = e.clientX || e.touches[0].clientX;
-            const clientY = e.clientY || e.touches[0].clientY;
-            startX = clientX - currentX;
-            startY = clientY - currentY;
-            badge.style.transition = 'none';
-        }
-
-        window.addEventListener('mousemove', drag);
-        window.addEventListener('touchmove', drag);
-        window.addEventListener('mouseup', stopDrag);
-        window.addEventListener('touchend', stopDrag);
-
-        function drag(e) {
-            if (!isDragging) return;
-            const clientX = e.clientX || e.touches[0].clientX;
-            const clientY = e.clientY || e.touches[0].clientY;
-            currentX = clientX - startX;
-            currentY = clientY - startY;
-            badge.style.transform = `translate(${currentX}px, ${currentY}px)`;
-        }
-
-        function stopDrag() {
-            if (!isDragging) return;
-            isDragging = false;
-            // تأثير الأستك (الرجوع لمكانها الأصلي بمرونة)
-            currentX = 0;
-            currentY = 0;
-            badge.style.transition = 'transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-            badge.style.transform = `translate(0px, 0px)`;
-        }
-
-        function handleAuth() {
-            const username = document.getElementById('loginUsername').value.trim();
-            const password = document.getElementById('loginPassword').value.trim();
-            
-            if(!username || !password) {
-                alert('الرجاء إدخال اسم المستخدم وكلمة المرور');
-                return;
-            }
-
-            if(username === 'admin' && password === 'admin123') {
-                isAdmin = true;
-                currentUser = { username: 'admin', ownerName: 'الأدمن' };
-                document.getElementById('authSection').classList.add('hidden');
-                document.getElementById('adminTopBar').classList.remove('hidden');
-                document.getElementById('badgeName').innerText = 'Admin Dashboard';
-                document.getElementById('badgeRole').innerText = 'مدير النظام';
-                showAdminDashboard();
-                return;
-            }
-
-            const ownerName = document.getElementById('regOwnerName').value || 'عميل';
-            const petName = document.getElementById('regPetName').value || 'أليف';
-            const petAge = document.getElementById('regPetAge').value || '-';
-            const petType = document.getElementById('regPetType').value;
-            const address = document.getElementById('regAddress').value || '-';
-
-            currentUser = { username, ownerName, petName, petAge, petType, address };
-            isAdmin = false;
-
-            document.getElementById('authSection').classList.add('hidden');
-            document.getElementById('mainNav').classList.remove('hidden');
-            document.getElementById('badgeName').innerText = petName + ' (' + petType + ')';
-            document.getElementById('badgeRole').innerText = 'صاحبه: ' + ownerName;
-            showSection('home');
-        }
-
-        function showSection(sectionId) {
-            document.getElementById('homeSection').classList.add('hidden');
-            document.getElementById('bookingSection').classList.add('hidden');
-            document.getElementById('ordersSection').classList.add('hidden');
-            document.getElementById('adminSection').classList.add('hidden');
-            document.getElementById(sectionId + 'Section').classList.remove('hidden');
-        }
-
-        function showAdminDashboard() {
-            document.getElementById('homeSection').classList.add('hidden');
-            document.getElementById('bookingSection').classList.add('hidden');
-            document.getElementById('ordersSection').classList.add('hidden');
-            document.getElementById('authSection').classList.add('hidden');
-            document.getElementById('adminSection').classList.remove('hidden');
-        }
-
-        function switchToUserView() {
-            document.getElementById('adminSection').classList.add('hidden');
-            document.getElementById('mainNav').classList.remove('hidden');
-            showSection('home');
-        }
-
-        function logout() {
-            currentUser = null;
-            isAdmin = false;
-            document.getElementById('adminTopBar').classList.add('hidden');
-            document.getElementById('mainNav').classList.add('hidden');
-            document.getElementById('authSection').classList.remove('hidden');
-            document.getElementById('loginUsername').value = '';
-            document.getElementById('loginPassword').value = '';
-            document.getElementById('badgeName').innerText = 'Pet Spot Staff';
-            document.getElementById('badgeRole').innerText = 'بطاقة تعريفية';
-        }
-
-        function sendBookingWhatsApp() {
-            const service = document.getElementById('bookService').value;
-            const date = document.getElementById('bookDate').value;
-            const notes = document.getElementById('bookNotes').value;
-
-            if(!date) {
-                alert('الرجاء اختيار تاريخ الميعاد');
-                return;
-            }
-
-            const message = `*حجز موعد جديد - Pet Spot*\n\n` +
-                            `👤 المالك: ${currentUser.ownerName}\n` +
-                            `🐾 الحيوان: ${currentUser.petName} (${currentUser.petType}) - العمر: ${currentUser.petAge}\n` +
-                            `📍 العنوان: ${currentUser.address}\n` +
-                            `🩺 الخدمة: ${service}\n` +
-                            `📅 التاريخ: ${date}\n` +
-                            `📝 ملاحظات: ${notes || 'لا يوجد'}`;
-
-            const url = `https://api.whatsapp.com/send?phone=${CLINIC_WHATSAPP}&text=${encodeURIComponent(message)}`;
-            window.open(url, '_blank');
-        }
-
-        function sendOrderWhatsApp() {
-            const items = document.getElementById('orderItems').value;
-            if(!items.trim()) {
-                alert('الرجاء كتابة المنتجات المطلوبة أولاً');
-                return;
-            }
-
-            const message = `*طلب أوردر جديد - Pet Spot*\n\n` +
-                            `👤 المالك: ${currentUser.ownerName}\n` +
-                            `🐾 الحيوان: ${currentUser.petName} (${currentUser.petType})\n` +
-                            `📍 العنوان: ${currentUser.address}\n` +
-                            `🛒 الطلبات:\n${items}`;
-
-            const url = `https://api.whatsapp.com/send?phone=${CLINIC_WHATSAPP}&text=${encodeURIComponent(message)}`;
-            window.open(url, '_blank');
-        }
-    </script>
-</body>
-</html>
+    // إشعارات التطبيق (بديل alert)
+// ... existing code ... -->
+```
